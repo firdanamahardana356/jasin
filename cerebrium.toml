@@ -1,33 +1,21 @@
+[cerebrium]
+project_id = "p-d91d0d77"   # isi pakai punyamu
+
 [cerebrium.deployment]
-name = "llm-inference"
+name = "auto-runner"
 python_version = "3.12"
 disable_auth = false
+timeout = 14400   # 4 jam
 
 [cerebrium.hardware]
-cpu = 4
-memory = 16.0
-compute = "AMPERE_A10"
-gpu_count = 1
-provider = "aws"
 region = "us-east-1"
 
-[cerebrium.scaling]
-min_replicas = 0
-max_replicas = 2
-replica_concurrency = 10
-response_grace_period = 3600
-cooldown = 1800
-scaling_metric = "concurrency_utilization"
-scaling_target = 100
-evaluation_interval_seconds = 30
-# load_balancing_algorithm = ""  # Auto-selects based on replica_concurrency
-# compute_tier = "interruptible"  # Use "protected" for on-demand instances
-roll_out_duration_seconds = 0
+cpu = 2
+memory = 8
 
-[cerebrium.dependencies.pip]
-torch = "latest"
-transformers = "latest"
+gpu_count = 1
+compute = "AMPERE_A10"
 
-[cerebrium.dependencies.conda]
-# Optional conda dependencies
-
+[cerebrium.entrypoint]
+file = "main.py"
+function = "run"
