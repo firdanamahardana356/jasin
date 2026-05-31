@@ -13,24 +13,16 @@ jobs:
       CEREBRIUM_PROJECT_ID: ${{ secrets.CEREBRIUM_PROJECT_ID }}
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install Cerebrium CLI
+      - name: Install CLI
         run: pip install cerebrium
 
-      # 🔍 DEBUG (WAJIB saat awal setup)
-      - name: Check project ID
+      - name: Debug (cek isi)
         run: echo "PROJECT=$CEREBRIUM_PROJECT_ID"
 
-      # 🔥 FIX UTAMA (pakai flag token + pastikan project kebaca)
       - name: Set project
-        run: cerebrium project set $CEREBRIUM_PROJECT_ID --service-account-token $CEREBRIUM_SERVICE_ACCOUNT_TOKEN
+        run: cerebrium project set $CEREBRIUM_PROJECT_ID
 
-      - name: Deploy to Cerebrium
-        run: cerebrium deploy --service-account-token $CEREBRIUM_SERVICE_ACCOUNT_TOKEN
+      - name: Deploy
+        run: cerebrium deploy
