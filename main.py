@@ -1,2 +1,2 @@
-def run(prompt: str):
-    return {"result": f"GPU processing: {prompt}"}
+def run(text: str):
+    return {"result": f"GPU OK: {text}"}
