@@ -1,0 +1,22 @@
+name: Cerebrium Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Cerebrium
+        run: pip install cerebrium
+
+      - name: Set project
+        run: cerebrium project set ${{ secrets.CEREBRIUM_PROJECT_ID }}
+
+      - name: Deploy
+        run: cerebrium deploy
