@@ -1,4 +1,4 @@
-name: Build & Deploy to Cerebrium GPU
+name: Deploy to Cerebrium GPU
 
 on:
   push:
@@ -14,35 +14,19 @@ jobs:
       CEREBRIUM_SERVICE_ACCOUNT_TOKEN: ${{ secrets.CEREBRIUM_SERVICE_ACCOUNT_TOKEN }}
 
     steps:
-      # 1. Clone repo
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # 2. Setup Python
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      # 3. Install dependencies
-      - name: Install dependencies
+      - name: Install
         run: |
-          pip install --upgrade pip
           pip install cerebrium
           pip install -r requirements.txt
 
-      # 4. Set project
-      - name: Set Cerebrium Project
+      - name: Set Project
         run: cerebrium project set $CEREBRIUM_PROJECT_ID
 
-      # 5. Validate (optional tapi bagus)
-      - name: Validate App
-        run: cerebrium validate
-
-      # 6. Deploy ke GPU
-      - name: Deploy App
+      - name: Deploy
         run: cerebrium deploy
-
-      # 7. Done
-      - name: Success
-        run: echo "Deploy berhasil ke GPU 🚀"
