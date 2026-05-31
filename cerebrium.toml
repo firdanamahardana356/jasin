@@ -1,8 +1,8 @@
-[project]
-name = "gpu-app"
-
-[compute]
-gpu = "A10"   # bisa A10 / A100 / L40S
+[cerebrium]
+project_id = "p-d91d0d77"   # ganti sesuai punyamu
 
 [deployment]
 entrypoint = "main.py:run"
+
+[compute]
+gpu = "A10"
