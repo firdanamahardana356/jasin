@@ -1,5 +1,5 @@
 [cerebrium]
-project_id = "p-d91d0d77"   # isi pakai punyamu
+project_id = "p-d91d0d77"   # isi pakai punyamu 
 
 [cerebrium.deployment]
 name = "auto-runner"
