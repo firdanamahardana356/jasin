@@ -1,5 +1,8 @@
 [cerebrium.hardware]
-compute = "ADA_L4"
-gpu_count = 1
 cpu = 4
-memory = 16
+memory = 16.0
+compute = "AMPERE_A10"
+gpu_count = 1
+provider = "aws"
+region = "us-east-1"
+
