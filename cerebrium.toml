@@ -2,7 +2,7 @@
 project_id = "p-d91d0d77"   # isi pakai punyamu  
 
 [cerebrium.deployment]
-name = "baba"
+name = "bismillah"
 python_version = "3.12"
 disable_auth = false
 timeout = 14400   # 4 jam
