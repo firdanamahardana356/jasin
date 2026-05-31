@@ -1,28 +1,42 @@
-name: Cerebrium Deploy
-
+name: Cerebrium Deployment
 on:
   push:
-    branches: [main]
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment"
+        type: choice
+        options:
+          - "dev"
+          - "prod"
+        required: true
+        default: "dev"
+  pull_request:
+    branches:
+      - master
+      - development
 
 jobs:
-  deploy:
+  deployment:
     runs-on: ubuntu-latest
-
+    environment: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/master' && 'prod') || 'dev' }}
     env:
+      ENV: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/master' && 'prod') || 'dev' }}
       CEREBRIUM_SERVICE_ACCOUNT_TOKEN: ${{ secrets.CEREBRIUM_SERVICE_ACCOUNT_TOKEN }}
       CEREBRIUM_PROJECT_ID: ${{ secrets.CEREBRIUM_PROJECT_ID }}
-
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.0
+      - uses: actions/setup-python@v5.0
+        with:
+          python-version: "3.10"
 
-      - name: Install CLI
+      - name: Install Cerebrium
         run: pip install cerebrium
 
-      - name: Debug (cek isi)
-        run: echo "PROJECT=$CEREBRIUM_PROJECT_ID"
+      - name: Set Cerebrium Project ID
+        run: cerebrium project set ${{ secrets.CEREBRIUM_PROJECT_ID }}
 
-      - name: Set project
-        run: cerebrium project set $CEREBRIUM_PROJECT_ID
-
-      - name: Deploy
+      - name: Deploy App
         run: cerebrium deploy
