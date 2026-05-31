@@ -1,41 +1,16 @@
-name: Cerebrium Deploy
+- name: Set Project
+  run: |
+    cerebrium project set $CEREBRIUM_PROJECT_ID \
+    --service-account-token $CEREBRIUM_SERVICE_ACCOUNT_TOKEN \
+    --verbose
+  env:
+    CEREBRIUM_PROJECT_ID: ${{ secrets.CEREBRIUM_PROJECT_ID }}
+    CEREBRIUM_SERVICE_ACCOUNT_TOKEN: ${{ secrets.CEREBRIUM_SERVICE_ACCOUNT_TOKEN }}
 
-on:
-  push:
-    branches: [main]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install CLI
-        run: pip install cerebrium
-
-      # 🔥 Debug secret (penting)
-      - name: Check ENV
-        run: |
-          echo "PROJECT=$CEREBRIUM_PROJECT_ID"
-        env:
-          CEREBRIUM_PROJECT_ID: ${{ secrets.CEREBRIUM_PROJECT_ID }}
-
-      # 🔥 Set project (pakai token langsung)
-      - name: Set Project
-        run: cerebrium project set $CEREBRIUM_PROJECT_ID --service-account-token $CEREBRIUM_SERVICE_ACCOUNT_TOKEN
-        env:
-          CEREBRIUM_PROJECT_ID: ${{ secrets.CEREBRIUM_PROJECT_ID }}
-          CEREBRIUM_SERVICE_ACCOUNT_TOKEN: ${{ secrets.CEREBRIUM_SERVICE_ACCOUNT_TOKEN }}
-
-      # 🚀 Deploy
-      - name: Deploy
-        run: cerebrium deploy --service-account-token $CEREBRIUM_SERVICE_ACCOUNT_TOKEN
-        env:
-          CEREBRIUM_SERVICE_ACCOUNT_TOKEN: ${{ secrets.CEREBRIUM_SERVICE_ACCOUNT_TOKEN }}
+- name: Deploy
+  run: |
+    cerebrium deploy \
+    --service-account-token $CEREBRIUM_SERVICE_ACCOUNT_TOKEN \
+    --verbose
+  env:
+    CEREBRIUM_SERVICE_ACCOUNT_TOKEN: ${{ secrets.CEREBRIUM_SERVICE_ACCOUNT_TOKEN }}
