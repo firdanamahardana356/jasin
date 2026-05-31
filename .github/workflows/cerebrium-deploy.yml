@@ -1,22 +1,22 @@
-name: Cerebrium Deployment
+name: Cerebrium Deploy
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    env:
+      CEREBRIUM_SERVICE_ACCOUNT_TOKEN: ${{ secrets.CEREBRIUM_SERVICE_ACCOUNT_TOKEN }}
+      CEREBRIUM_PROJECT_ID: ${{ secrets.CEREBRIUM_PROJECT_ID }}
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Cerebrium
-        run: pip install cerebrium
+      - run: pip install cerebrium
 
-      - name: Set project
-        run: cerebrium project set ${{ secrets.CEREBRIUM_PROJECT_ID }}
+      - run: cerebrium project set $CEREBRIUM_PROJECT_ID
 
-      - name: Deploy
-        run: cerebrium deploy
+      - run: cerebrium deploy
