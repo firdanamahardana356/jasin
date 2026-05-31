@@ -1,7 +1,7 @@
 [cerebrium]
-project_id = "p-d91d0d77"   # ganti sesuai punyamu
 
 [deployment]
+name = "gpu-app"          # ← WAJIB ADA (bebas isi apa saja)
 entrypoint = "main.py:run"
 
 [compute]
