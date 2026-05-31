@@ -8,11 +8,8 @@ disable_auth = false
 timeout = 14400   # 4 jam
 
 [cerebrium.hardware]
-region = "us-east-1"
-
 cpu = 4
 memory = 8
-
 gpu_count = 1
 compute = "AMPERE_A10"
 
