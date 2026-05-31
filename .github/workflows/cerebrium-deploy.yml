@@ -1,42 +1,41 @@
-name: Cerebrium Deployment
+name: Cerebrium Deploy
+
 on:
   push:
-    branches:
-      - master
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: "Environment"
-        type: choice
-        options:
-          - "dev"
-          - "prod"
-        required: true
-        default: "dev"
-  pull_request:
-    branches:
-      - master
-      - development
+    branches: [main]
 
 jobs:
-  deployment:
+  deploy:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/master' && 'prod') || 'dev' }}
-    env:
-      ENV: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/master' && 'prod') || 'dev' }}
-      CEREBRIUM_SERVICE_ACCOUNT_TOKEN: ${{ secrets.CEREBRIUM_SERVICE_ACCOUNT_TOKEN }}
-      CEREBRIUM_PROJECT_ID: ${{ secrets.CEREBRIUM_PROJECT_ID }}
-    steps:
-      - uses: actions/checkout@v4.0
-      - uses: actions/setup-python@v5.0
-        with:
-          python-version: "3.10"
 
-      - name: Install Cerebrium
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install CLI
         run: pip install cerebrium
 
-      - name: Set Cerebrium Project ID
-        run: cerebrium project set ${{ secrets.CEREBRIUM_PROJECT_ID }}
+      # 🔥 Debug secret (penting)
+      - name: Check ENV
+        run: |
+          echo "PROJECT=$CEREBRIUM_PROJECT_ID"
+        env:
+          CEREBRIUM_PROJECT_ID: ${{ secrets.CEREBRIUM_PROJECT_ID }}
 
-      - name: Deploy App
-        run: cerebrium deploy
+      # 🔥 Set project (pakai token langsung)
+      - name: Set Project
+        run: cerebrium project set $CEREBRIUM_PROJECT_ID --service-account-token $CEREBRIUM_SERVICE_ACCOUNT_TOKEN
+        env:
+          CEREBRIUM_PROJECT_ID: ${{ secrets.CEREBRIUM_PROJECT_ID }}
+          CEREBRIUM_SERVICE_ACCOUNT_TOKEN: ${{ secrets.CEREBRIUM_SERVICE_ACCOUNT_TOKEN }}
+
+      # 🚀 Deploy
+      - name: Deploy
+        run: cerebrium deploy --service-account-token $CEREBRIUM_SERVICE_ACCOUNT_TOKEN
+        env:
+          CEREBRIUM_SERVICE_ACCOUNT_TOKEN: ${{ secrets.CEREBRIUM_SERVICE_ACCOUNT_TOKEN }}
